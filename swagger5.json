@@ -1,0 +1,523 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "An API documentation demonstration using API2 as an example",
+    "version": "1.0.0",
+    "title": "Livedataset API2"
+  },
+  "host": "out1.livedataset.com",
+  "basePath": "/out-lds/api/v2",
+  "tags": [
+    {
+      "name": "Logging in / Authorization",
+      "description": "Log into livedataset"
+    },
+    {
+      "name": "Entry",
+      "description": "Everything about Entry specific operations"
+    },
+    {
+      "name": "File",
+      "description": "File specific operations"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "security": [
+    {
+      "Bearer": []
+    }
+  ],
+  "paths": {
+    "/auth": {
+      "post": {
+        "tags": [
+          "Logging in / Authorization"
+        ],
+        "summary": "Log into livedataset",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "details",
+            "description": "Details to log in with",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LogInDetails"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/tokenBearer"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/views/{viewid}/entries": {
+      "post": {
+        "tags": [
+          "Entry"
+        ],
+        "summary": "Create a new Entry",
+        "description": "Pass an ID-less Entry to be created within the View",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Entry Object to be created",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Entry (Creating)"
+            }
+          },
+          {
+            "name": "viewid",
+            "in": "path",
+            "description": "View to create Entry within",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "useColumnNames",
+            "type": "boolean",
+            "required": false
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Entry"
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Entry"
+        ],
+        "summary": "Update an existing Entry",
+        "description": "The ID of the View and the Entry passed will be used to find the Entry and update with the passed Values </br><hr> unupdated columns will be left in their current state",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Entry Object to be updated",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Entry"
+            }
+          },
+          {
+            "name": "viewid",
+            "in": "path",
+            "description": "View the Entry is located within",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "useColumnNames",
+            "type": "boolean",
+            "required": false
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Entry"
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Entry"
+        ],
+        "summary": "Get all Entries within a View",
+        "description": "Find and return all Entries based on viewId",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "viewid",
+            "in": "path",
+            "description": "View whose Entries will be returned",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "pagenumber",
+            "in": "query",
+            "description": "Page number to turn to to find entries within",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pagesize",
+            "in": "query",
+            "description": "The size of pages to turn",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "useColumnNames",
+            "type": "boolean",
+            "required": false
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Entry Bulk"
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/views/{viewid}/entries/{entryid}": {
+      "get": {
+        "tags": [
+          "Entry"
+        ],
+        "summary": "Get an Entry based on entryId",
+        "description": "Find and return an Entry based on entryId",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "entryid",
+            "in": "path",
+            "description": "id of Entry to be returned",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "viewid",
+            "in": "path",
+            "description": "View the Entry is located within",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "useColumnNames",
+            "type": "boolean",
+            "required": false
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Entry"
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Entry"
+        ],
+        "summary": "Deletes an Entry based on its ID",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "entryid",
+            "in": "path",
+            "description": "id of Entry to be returned",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "viewid",
+            "in": "path",
+            "description": "View the Entry is located within",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/views/{viewid}/entries/bulk": {
+      "post": {
+        "tags": [
+          "Entry"
+        ],
+        "summary": "Create multiple new Entries",
+        "description": "Pass an array of ID-less Entry to be created within the View",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Entry Objects to be created",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Entry (Creating) Bulk"
+            }
+          },
+          {
+            "name": "viewid",
+            "in": "path",
+            "description": "View to create Entry within",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "useColumnNames",
+            "type": "boolean",
+            "required": false
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Entry Bulk"
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Entry"
+        ],
+        "summary": "Update an existing Entry",
+        "description": "The ID of the View and the Entry passed will be used to find the Entry and update with the passed Values </br><hr> unupdated columns will be left in their current state",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Entry Object to be updated",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Entry (Creating) Bulk"
+            }
+          },
+          {
+            "name": "viewid",
+            "in": "path",
+            "description": "View the Entry is located within",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "useColumnNames",
+            "type": "boolean",
+            "required": false
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Entry Bulk"
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "tokenBearer": {
+      "type": "object",
+      "required": [
+        "token"
+      ],
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "LogInDetails": {
+      "type": "object",
+      "required": [
+        "username",
+        "password"
+      ],
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "Entry (Creating)": {
+      "type": "object",
+      "required": [
+        "values"
+      ],
+      "properties": {
+        "values": {
+          "$ref": "#/definitions/values"
+        }
+      }
+    },
+    "Entry": {
+      "type": "object",
+      "required": [
+        "values"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "values": {
+          "$ref": "#/definitions/values"
+        }
+      }
+    },
+    "Entry Bulk": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Entry"
+      }
+    },
+    "values": {
+      "type": "object",
+      "required": [
+        "columnId"
+      ],
+      "properties": {
+        "columnId": {
+          "type": "string"
+        }
+      }
+    },
+    "Entry (Creating) Bulk": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Entry (Creating)"
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Go to LiveDataset",
+    "url": "https://out1.livedataset.com/out-lds/home?#/home"
+  }
+}
